@@ -1,0 +1,70 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "precommit": "lint-staged",
+    "lint": "eslint tests app app.js --ext .js",
+    "lint:fix": "eslint tests app app.js --ext .js --fix",
+    "test": "jest",
+    "test:coverage": "jest --ci --coverage=true --runInBand --detectOpenHandles --forceExit --changedSince=origin/develop",
+    "test:coverage-all": "jest --ci --coverage=true --runInBand --detectOpenHandles --forceExit"
+  },
+  "dependencies": {
+    "expo": "~41.0.1",
+    "expo-status-bar": "~1.0.4",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
+    "react-native-web": "~0.13.12"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.9.0",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "eslint": "^7.18.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-import-resolver-babel-module": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^4.3.8",
+    "jest": "^26.6.3",
+    "jest-expo": "^40.0.2",
+    "jest-styled-components": "^7.0.3",
+    "lint-staged": "^10.5.3",
+    "msw": "^0.26.0",
+    "prettier": "^2.2.1",
+    "react-test-renderer": "^17.0.1"
+  },
+  "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "app.js": [
+      "eslint app.js --ext .js --fix",
+      "prettier --write"
+    ],
+    "app/**/*.{js,jsx,ts,tsx,json,css,scss}": [
+      "eslint app --ext .js --fix",
+      "prettier --write"
+    ],
+    "tests/**/*.{js,jsx,ts,tsx,json,css,scss}": [
+      "eslint app --ext .js --fix",
+      "prettier --write"
+    ]
+  }
+}

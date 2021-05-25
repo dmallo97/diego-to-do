@@ -1,0 +1,127 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true,
+    "jest/globals": true
+  },
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest/style",
+    "eslint-config-prettier",
+    "prettier/react",
+    "prettier"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly",
+    "__CLIENT__": true,
+    "__SERVER__": true,
+    "__DEV__": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "import", "jest"],
+  "rules": {
+    "no-param-reassign": [2, { "props": false }],
+    "no-use-before-define": [
+      2,
+      { "functions": false, "classes": true, "variables": true }
+    ],
+    "linebreak-style": [2, "unix"],
+    "arrow-body-style": ["error", "as-needed"],
+    "curly": [2, "all"],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "unknown",
+          "index",
+          "object",
+          "internal"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "assets/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "components/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "containers/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "models/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "navigation/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "stores/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "styles/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "services/*",
+            "group": "internal"
+          },
+          {
+            "pattern": "mappers/*",
+            "group": "internal"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "import/no-unresolved": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js"]
+      }
+    ],
+    "prefer-destructuring": [
+      "error",
+      {
+        "array": false,
+        "object": true
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ],
+    "prettier/prettier": ["error"],
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error"
+  }
+}

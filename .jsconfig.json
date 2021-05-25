@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["app/*"],
+      "tests/*": ["tests/*"],
+      "assets/*": ["assets/*"],
+      "components/*": ["app/components/*"],
+      "containers/*": ["app/containers/*"],
+      "enums/*": ["app/enums/*"],
+      "models/*": ["app/models/*"],
+      "navigation/*": ["app/navigation/*"],
+      "stores/*": ["app/stores/*"],
+      "styles/*": ["app/styles/*"],
+      "services/*": ["app/services/*"],
+      "utils/*": ["app/utils/*"],
+      "mappers/*": ["app/mappers/*"],
+    }
+  },
+  "exclude": ["node_modules", "**/node_modules/*"],
+  "typeAcquisition": {
+    "include": ["jest", "mobx-state-tree", "mobx", "mobx-react-lite", "axios"]
+  }
+}
