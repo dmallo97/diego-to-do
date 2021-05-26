@@ -16,7 +16,7 @@
       "styles/*": ["app/styles/*"],
       "services/*": ["app/services/*"],
       "utils/*": ["app/utils/*"],
-      "mappers/*": ["app/mappers/*"],
+      "mappers/*": ["app/mappers/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"],
