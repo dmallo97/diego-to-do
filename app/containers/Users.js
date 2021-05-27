@@ -1,7 +1,8 @@
 import React from 'react';
 
+import PropTypes from 'prop-types';
 import { TouchableOpacity, SafeAreaView } from 'react-native';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '../styles/constants/Colors';
 
@@ -29,6 +30,11 @@ const UserList = styled.FlatList`
 `;
 
 const UserListRow = styled.View`
+  ${(props) =>
+    props.selected &&
+    css`
+      background-color: grey;
+    `}
   padding: 10px;
   border: 1px solid grey;
   border-radius: 3px;
@@ -40,38 +46,53 @@ const UserListRow = styled.View`
 const UserListRowText = styled.Text`
   font-size: 20px;
   font-weight: bold;
-  color: grey;
+  ${(props) => {
+    if (props.selected) {
+      return `color: white`;
+    }
+    return `color: grey`;
+  }}
 `;
 
-const usersListSample = ['Pedro', 'Luana', 'Santiago'];
+const usersListSample = [
+  { name: 'Pedro', selected: true },
+  { name: 'Luana', selected: false },
+  { name: 'Santiago', selected: false },
+];
 
-const Users = () => {
-  const handlePress = () => {};
-  const handleAddUserBtnClick = () => {};
+const Users = ({ navigation }) => {
+  const handleUserPress = (userName) => userName;
+  const handleAddUserBtnPress = () => {
+    navigation.navigate('AddUserModal');
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <ScreenDescription>
-          ¡Hola {usersListSample[0]}! Puedes elegir otro usuario si lo deseas.
+          ¡Hola {usersListSample[0].name}! Puedes elegir otro usuario si lo
+          deseas.
         </ScreenDescription>
         <UserList
           data={usersListSample}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={handlePress}>
-              <UserListRow>
-                <UserListRowText>{item}</UserListRowText>
+            <TouchableOpacity onPress={handleUserPress(item.name)}>
+              <UserListRow selected={item.selected}>
+                <UserListRowText>{item.name}</UserListRowText>
               </UserListRow>
             </TouchableOpacity>
           )}
         />
-        <AddUserButton
-          title="Agregar un usuario"
-          onPress={handleAddUserBtnClick}
-        />
+        <AddUserButton title="Add user" onPress={handleAddUserBtnPress} />
       </Container>
     </SafeAreaView>
   );
+};
+
+Users.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default Users;

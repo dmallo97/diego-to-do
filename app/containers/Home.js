@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { StatusBar } from 'expo-status-bar';
+import PropTypes from 'prop-types';
 import { SafeAreaView } from 'react-native';
 import styled from 'styled-components';
 
@@ -30,7 +31,7 @@ const Container = styled.View`
   height: 100%;
 `;
 
-const Home = () => (
+const Home = ({ navigation }) => (
   <SafeAreaView>
     <Container>
       <StatusBar
@@ -43,9 +44,20 @@ const Home = () => (
         keyExtractor={(item) => item}
         renderItem={({ item }) => <Item description={item} />}
       />
-      <AddItemButton title="Add item" onPress={() => {}} />
+      <AddItemButton
+        title="Add item"
+        onPress={() => {
+          navigation.navigate('AddListItemModal');
+        }}
+      />
     </Container>
   </SafeAreaView>
 );
+
+Home.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default Home;
