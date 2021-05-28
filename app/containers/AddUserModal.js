@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { Text, Button, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, KeyboardAvoidingView, Platform, Button } from 'react-native';
 import styled from 'styled-components';
 
 import colors from '../styles/constants/Colors';
@@ -21,7 +21,6 @@ const FormCard = styled.View`
   align-self: flex-end;
   margin-top: auto;
   padding: 20px;
-  font-size: 24px;
 `;
 
 const EmailInput = styled.TextInput`
@@ -29,6 +28,21 @@ const EmailInput = styled.TextInput`
   border-width: 1px;
   padding: 10px;
   border-radius: 5px;
+  font-size: 24px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
+const AddUserButton = styled.Pressable`
+  background-color: ${colors.iosBlue};
+  padding: 15px;
+  align-items: center;
+  border-radius: 10px;
+`;
+
+const AddUserButtonInnerText = styled.Text`
+  color: ${colors.white};
+  font-size: 20px;
 `;
 
 const AddUserModal = ({ navigation }) => {
@@ -44,12 +58,15 @@ const AddUserModal = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <FormCard>
-          <Text>Enter users email</Text>
+          <Text style={{ fontSize: 24 }}>Enter new account email</Text>
           <EmailInput
             onChangeText={(value) => setUserEmail(value)}
             placeholder="johndoe@example.com"
           />
-          <Button title="Press me" onPress={handleAddUserBtnPress} />
+          <Button title="Go back" onPress={() => navigation.goBack()} />
+          <AddUserButton onPress={handleAddUserBtnPress}>
+            <AddUserButtonInnerText>Add account</AddUserButtonInnerText>
+          </AddUserButton>
         </FormCard>
       </KeyboardAvoidingView>
     </Container>
