@@ -61,6 +61,7 @@ const Home = () => {
           data={toDoItemsSample}
           keyExtractor={(item) => item}
           renderItem={({ item }) => <Item description={item} />}
+          listEmptyComponent="You're already up to date!"
         />
         <AddItemButton onPress={() => setModalVisible(true)}>
           <AddItemButtonInnerText>Add new item</AddItemButtonInnerText>

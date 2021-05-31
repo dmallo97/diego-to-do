@@ -47,6 +47,7 @@ const UserListRowText = styled.Text`
   font-size: 20px;
   font-weight: bold;
   ${(props) => {
+    console.log('UserListRowText prop: ', props.selected);
     if (props.selected) {
       return `color: white`;
     }
@@ -78,7 +79,9 @@ const Users = ({ navigation }) => {
           renderItem={({ item }) => (
             <TouchableOpacity onPress={handleUserPress(item.name)}>
               <UserListRow selected={item.selected}>
-                <UserListRowText>{item.name}</UserListRowText>
+                <UserListRowText selected={item.selected}>
+                  {item.name}
+                </UserListRowText>
               </UserListRow>
             </TouchableOpacity>
           )}
