@@ -47,7 +47,6 @@ const UserListRowText = styled.Text`
   font-size: 20px;
   font-weight: bold;
   ${(props) => {
-    console.log('UserListRowText prop: ', props.selected);
     if (props.selected) {
       return `color: white`;
     }
