@@ -2,14 +2,12 @@ import { createContext } from 'react';
 
 import { types } from 'mobx-state-tree';
 
-import AccountStore from './AccountModel';
-import { TodoListStore } from './TodoModel';
+import AccountStore from './AccountStore';
 
-const RootStore = types.model({
-  todoListStore: TodoListStore,
-  accountStore: AccountStore,
+export const RootStore = types.model({
+  accountStore: types.optional(AccountStore, {}),
 });
 
-const MobxContext = createContext();
+export const MobxContext = createContext();
 
 export default { RootStore, MobxContext };

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native';
 import styled from 'styled-components';
 
+import { MobxContext } from '../models/Root';
 import colors from '../styles/constants/Colors';
 
 const ModalCard = styled.View`
@@ -53,24 +55,36 @@ const AddItemButtonInnerText = styled.Text`
   font-size: 16px;
 `;
 
-const AddListItemModal = ({ setModalVisibility }) => (
-  <SafeAreaContent>
-    <ModalCard>
-      <ModalText>What else you need to do?</ModalText>
-      <ModalInput
-        onChangeText={() => {}}
-        placeholder="Type something like go shopping"
-      />
-      <Button title="Go back" onPress={() => setModalVisibility(false)} />
-      <AddItemButton onPress={() => setModalVisibility(false)}>
-        <AddItemButtonInnerText>Add task</AddItemButtonInnerText>
-      </AddItemButton>
-    </ModalCard>
-  </SafeAreaContent>
-);
+const AddListItemModal = ({ setModalVisibility }) => {
+  const [newTodo, setNewTodo] = useState('');
+  const { accountStore } = useContext(MobxContext);
+
+  const handleAddItemBtnPress = () => {
+    accountStore.userLoggedIn.addTodo({
+      title: newTodo,
+      description: newTodo,
+    });
+    setModalVisibility(false);
+  };
+  return (
+    <SafeAreaContent>
+      <ModalCard>
+        <ModalText>What else you need to do?</ModalText>
+        <ModalInput
+          onChangeText={(value) => setNewTodo(value)}
+          placeholder="Type something i.e 'Go shopping'"
+        />
+        <Button title="Go back" onPress={() => setModalVisibility(false)} />
+        <AddItemButton onPress={() => handleAddItemBtnPress()}>
+          <AddItemButtonInnerText>Add task</AddItemButtonInnerText>
+        </AddItemButton>
+      </ModalCard>
+    </SafeAreaContent>
+  );
+};
 
 AddListItemModal.propTypes = {
   setModalVisibility: PropTypes.func.isRequired,
 };
 
-export default AddListItemModal;
+export default observer(AddListItemModal);

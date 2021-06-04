@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 import React from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,12 +9,14 @@ import AddListItemModal from './containers/AddListItemModal';
 import AddUserModal from './containers/AddUserModal';
 import Home from './containers/Home';
 import Users from './containers/Users';
+import { MobxContext, RootStore } from './models/Root';
 
 const UsersStack = createStackNavigator();
+const Store = RootStore.create({});
 
 function UsersStackScreen() {
   return (
-    <UsersStack.Navigator mode="modal">
+    <UsersStack.Navigator>
       <UsersStack.Screen
         name="UsersList"
         component={Users}
@@ -51,19 +54,21 @@ const RootStackTab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStackTab.Navigator>
-        <RootStackTab.Screen
-          name="Home"
-          component={HomeStackScreen}
-          options={{ headerShown: false }}
-        />
-        <RootStackTab.Screen
-          name="Accounts"
-          component={UsersStackScreen}
-          options={{ headerShown: false }}
-        />
-      </RootStackTab.Navigator>
-    </NavigationContainer>
+    <MobxContext.Provider value={Store}>
+      <NavigationContainer>
+        <RootStackTab.Navigator>
+          <RootStackTab.Screen
+            name="Home"
+            component={HomeStackScreen}
+            options={{ headerShown: false }}
+          />
+          <RootStackTab.Screen
+            name="Accounts"
+            component={UsersStackScreen}
+            options={{ headerShown: false }}
+          />
+        </RootStackTab.Navigator>
+      </NavigationContainer>
+    </MobxContext.Provider>
   );
 }
