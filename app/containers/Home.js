@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { Modal, SafeAreaView } from 'react-native';
 import styled from 'styled-components';
 
 import Item from '../components/Item';
+import { MobxContext } from '../models/Root';
 import colors from '../styles/constants/Colors';
 import AddListItemModal from './AddListItemModal';
-
-const toDoItemsSample = ['Run errands', 'Groceries', 'Go shopping'];
+import ForcedSignInModal from './ForcedSignInModal';
 
 const ToDoList = styled.FlatList`
   padding: 10px;
@@ -36,8 +37,17 @@ const AddItemButtonInnerText = styled.Text`
   font-size: 20px;
 `;
 
-const Home = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+const Home = ({ navigation }) => {
+  const [addItemModalVisibility, setAddItemModalVisibility] = useState(false);
+  const [signInModalVisibility, setSignInModalVisibility] = useState(false);
+  const { accountStore } = useContext(MobxContext);
+  useEffect(() => {
+    if (!accountStore.userLoggedIn) {
+      setSignInModalVisibility(true);
+    } else {
+      setSignInModalVisibility(false);
+    }
+  });
 
   return (
     <SafeAreaView>
@@ -45,12 +55,22 @@ const Home = () => {
         <Modal
           animationType="slide"
           transparent
-          visible={modalVisible}
+          visible={addItemModalVisibility}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setAddItemModalVisibility(!addItemModalVisibility);
           }}
         >
-          <AddListItemModal setModalVisibility={setModalVisible} />
+          <AddListItemModal setModalVisibility={setAddItemModalVisibility} />
+        </Modal>
+        <Modal
+          visible={signInModalVisibility}
+          transparent={false}
+          animationType="fade"
+        >
+          <ForcedSignInModal
+            setModalVisibility={setSignInModalVisibility}
+            navigation={navigation}
+          />
         </Modal>
         <StatusBar
           barStyle="light-content"
@@ -58,13 +78,17 @@ const Home = () => {
           translucent={false}
         />
         <ToDoList
-          data={toDoItemsSample}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => <Item description={item} />}
+          data={
+            accountStore.userLoggedIn ? accountStore.userLoggedIn.todoList : []
+          }
+          keyExtractor={(item, index) => `${item} ${index}`}
+          renderItem={({ item }) => (
+            <Item task={item} account={accountStore.userLoggedIn} />
+          )}
           listEmptyComponent="You're already up to date!"
         />
-        <AddItemButton onPress={() => setModalVisible(true)}>
-          <AddItemButtonInnerText>Add new item</AddItemButtonInnerText>
+        <AddItemButton onPress={() => setAddItemModalVisibility(true)}>
+          <AddItemButtonInnerText>Add new task</AddItemButtonInnerText>
         </AddItemButton>
       </Container>
     </SafeAreaView>
@@ -77,4 +101,4 @@ Home.propTypes = {
   }).isRequired,
 };
 
-export default Home;
+export default observer(Home);

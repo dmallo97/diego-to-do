@@ -1,9 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { Text, KeyboardAvoidingView, Platform, Button } from 'react-native';
 import styled from 'styled-components';
 
+import { MobxContext } from '../models/Root';
 import colors from '../styles/constants/Colors';
 
 const Container = styled.SafeAreaView`
@@ -23,7 +25,7 @@ const FormCard = styled.View`
   padding: 20px;
 `;
 
-const EmailInput = styled.TextInput`
+const Input = styled.TextInput`
   border-color: grey;
   border-width: 1px;
   padding: 10px;
@@ -46,11 +48,24 @@ const AddUserButtonInnerText = styled.Text`
 `;
 
 const AddUserModal = ({ navigation }) => {
-  const [newUserEmail, setUserEmail] = useState('');
-
+  const [newAccountFields, setNewAccountFields] = useState({
+    name: '',
+    email: '',
+  });
+  const { accountStore } = useContext(MobxContext);
   const handleAddUserBtnPress = useCallback(() => {
-    navigation.goBack();
-  }, [newUserEmail]);
+    const newAccount = accountStore.addAccount(newAccountFields);
+    setNewAccountFields({
+      name: '',
+      email: '',
+    });
+    if (!accountStore.userLoggedIn) {
+      accountStore.logIn(newAccount);
+      navigation.navigate('Home');
+    } else {
+      navigation.goBack();
+    }
+  }, [newAccountFields]);
 
   return (
     <Container>
@@ -58,13 +73,29 @@ const AddUserModal = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <FormCard>
-          <Text style={{ fontSize: 24 }}>Enter new account email</Text>
-          <EmailInput
-            onChangeText={(value) => setUserEmail(value)}
+          <Text style={{ fontSize: 24 }}>
+            Who is going to manage this account?
+          </Text>
+          <Input
+            onChangeText={(value) =>
+              setNewAccountFields({ ...newAccountFields, name: value })
+            }
+            placeholder="John Doe"
+          />
+          <Text style={{ fontSize: 24 }}>What is his/her email?</Text>
+          <Input
+            onChangeText={(value) =>
+              setNewAccountFields({ ...newAccountFields, email: value })
+            }
             placeholder="johndoe@example.com"
           />
-          <Button title="Go back" onPress={() => navigation.goBack()} />
-          <AddUserButton onPress={handleAddUserBtnPress}>
+          <Button
+            title="Go back"
+            onPress={() =>
+              navigation.navigate('Accounts', { screen: 'UsersList' })
+            }
+          />
+          <AddUserButton onPress={() => handleAddUserBtnPress()}>
             <AddUserButtonInnerText>Add account</AddUserButtonInnerText>
           </AddUserButton>
         </FormCard>
@@ -75,8 +106,9 @@ const AddUserModal = ({ navigation }) => {
 
 AddUserModal.propTypes = {
   navigation: PropTypes.shape({
-    goBack: PropTypes.func.isRequired,
+    goBack: PropTypes.func,
+    navigate: PropTypes.func,
   }).isRequired,
 };
 
-export default AddUserModal;
+export default observer(AddUserModal);

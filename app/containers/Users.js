@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, SafeAreaView } from 'react-native';
+import { TouchableOpacity, SafeAreaView, Text } from 'react-native';
 import styled, { css } from 'styled-components';
 
+import { MobxContext } from '../models/Root';
 import colors from '../styles/constants/Colors';
 
 const Container = styled.View`
@@ -54,38 +56,79 @@ const UserListRowText = styled.Text`
   }}
 `;
 
-const usersListSample = [
-  { name: 'Pedro', selected: true },
-  { name: 'Luana', selected: false },
-  { name: 'Santiago', selected: false },
-];
-
 const Users = ({ navigation }) => {
-  const handleUserPress = (userName) => userName;
+  const { accountStore } = useContext(MobxContext);
+  /* const handleUserPress = (account) => {
+    console.log('Account pressed: ', account);
+    console.log('User logged in: ', accountStore.userLoggedIn);
+    if (!account) {
+      return;
+    }
+    if (account.name === accountStore.userLoggedIn.name) {
+      return; // deberia evaluarse id
+    }
+    accountStore.logOut();
+    accountStore.logIn(account);
+    navigation.navigate('Home');
+  }; */
   const handleAddUserBtnPress = () => {
     navigation.navigate('AddUserModal');
   };
+
+  const handleUserPress = useCallback((account) => {
+    console.log('Account pressed: ', account);
+    console.log('User logged in: ', accountStore.userLoggedIn);
+    if (!account) {
+      return;
+    }
+    if (account.name === accountStore.userLoggedIn.name) {
+      return; // deberia evaluarse id
+    }
+    accountStore.logOut();
+    accountStore.logIn(account);
+    console.log(
+      'Account logged in after executing function: ',
+      accountStore.userLoggedIn
+    );
+    navigation.navigate('Home');
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <ScreenDescription>
-          ¡Hola {usersListSample[0].name}! Puedes elegir otro usuario si lo
-          deseas.
+          ¡Hey {accountStore.userLoggedIn ? accountStore.userLoggedIn.name : ''}
+          ! Not you? Choose another account to see others tasks
         </ScreenDescription>
         <UserList
-          data={usersListSample}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={handleUserPress(item.name)}>
-              <UserListRow selected={item.selected}>
-                <UserListRowText selected={item.selected}>
-                  {item.name}
-                </UserListRowText>
-              </UserListRow>
-            </TouchableOpacity>
-          )}
+          data={accountStore.accounts ? accountStore.accounts : []} // revisar
+          keyExtractor={(item, index) => `${item} ${index}`}
+          renderItem={({ item }) => {
+            console.log('Account inside render item', item);
+            console.log('Account store inside render item', accountStore);
+            if (!item) {
+              return <Text>Couldnt display account</Text>;
+            }
+            return (
+              <TouchableOpacity onPress={() => handleUserPress(item)}>
+                <UserListRow
+                  selected={item.name === accountStore.userLoggedIn.name}
+                >
+                  <UserListRowText
+                    selected={item.name === accountStore.userLoggedIn.name}
+                  >
+                    {item.name}
+                  </UserListRowText>
+                </UserListRow>
+              </TouchableOpacity>
+            );
+          }}
+          listEmptyComponent="Oops! We couldnt find more accounts to choose from"
         />
-        <AddUserButton title="Add user" onPress={handleAddUserBtnPress} />
+        <AddUserButton
+          title="Add user"
+          onPress={() => handleAddUserBtnPress()}
+        />
       </Container>
     </SafeAreaView>
   );
@@ -97,4 +140,4 @@ Users.propTypes = {
   }).isRequired,
 };
 
-export default Users;
+export default observer(Users);
