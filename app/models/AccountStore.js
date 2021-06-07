@@ -15,7 +15,7 @@ const TodoModel = types
       self.description = newDescription;
     },
     markAsDone() {
-      self.isDone = true;
+      self.isDone = !self.isDone;
     },
   }));
 

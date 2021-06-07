@@ -24,11 +24,16 @@ const Item = ({ task, account }) => {
         onPress={() => handlePress()}
         fillColor={colors.iosBlue}
         unfillColor={colors.white}
+        textStyle={{ fontSize: 20 }}
         iconStyle={{ borderColor: colors.iosBlue }}
       />
-      <TaskDescriptionContainer>
-        <Description>{task.description}</Description>
-      </TaskDescriptionContainer>
+      {!task.isDone ? (
+        <TaskDescriptionContainer>
+          <Description>{task.description}</Description>
+        </TaskDescriptionContainer>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 };
@@ -49,7 +54,6 @@ const Container = styled.View`
   display: flex;
   flex-direction: column;
   padding: 5px;
-  height: 30px;
   ${'' /* justify-content: center; */}
   margin: 10px;
 `;
@@ -65,7 +69,7 @@ const TaskDescriptionContainer = styled.View`
 
 const Description = styled.Text`
   color: ${colors.descriptionDarkerGrey};
-  font-size: 20px;
+  font-size: 16px;
 `;
 
 export default observer(Item);
