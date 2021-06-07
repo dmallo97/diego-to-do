@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Modal, SafeAreaView } from 'react-native';
+import { Modal, SafeAreaView, Text } from 'react-native';
 import styled from 'styled-components';
 
 import Item from '../components/Item';
@@ -85,7 +85,11 @@ const Home = ({ navigation }) => {
           renderItem={({ item }) => (
             <Item task={item} account={accountStore.userLoggedIn} />
           )}
-          listEmptyComponent="You're already up to date!"
+          ListEmptyComponent={() => (
+            <Text>
+              Nothing to do. You&apos;re already up to date! Add a task below.
+            </Text>
+          )}
         />
         <AddItemButton onPress={() => setAddItemModalVisibility(true)}>
           <AddItemButtonInnerText>Add new task</AddItemButtonInnerText>

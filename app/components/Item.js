@@ -27,7 +27,7 @@ const Item = ({ task, account }) => {
         textStyle={{ fontSize: 20 }}
         iconStyle={{ borderColor: colors.iosBlue }}
       />
-      {!task.isDone ? (
+      {!task.isDone && task.description !== '' ? (
         <TaskDescriptionContainer>
           <Description>{task.description}</Description>
         </TaskDescriptionContainer>

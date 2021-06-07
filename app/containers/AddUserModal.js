@@ -81,6 +81,7 @@ const AddUserModal = ({ navigation }) => {
               setNewAccountFields({ ...newAccountFields, name: value })
             }
             placeholder="John Doe"
+            value={newAccountFields.name}
           />
           <Text style={{ fontSize: 24 }}>What is his/her email?</Text>
           <Input
@@ -88,6 +89,7 @@ const AddUserModal = ({ navigation }) => {
               setNewAccountFields({ ...newAccountFields, email: value })
             }
             placeholder="johndoe@example.com"
+            value={newAccountFields.email}
           />
           <Button
             title="Go back"

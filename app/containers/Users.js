@@ -123,7 +123,9 @@ const Users = ({ navigation }) => {
               </TouchableOpacity>
             );
           }}
-          listEmptyComponent="Oops! We couldnt find more accounts to choose from"
+          ListEmptyComponent={() => (
+            <Text>Oops! We couldnt find more accounts to choose from</Text>
+          )}
         />
         <AddUserButton
           title="Add user"

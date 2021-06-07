@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Button } from 'react-native';
+import { Alert, Button } from 'react-native';
 import styled from 'styled-components';
 
 import { MobxContext } from '../models/Root';
@@ -42,6 +42,11 @@ const ModalInput = styled.TextInput`
   padding: 5px;
 `;
 
+const InputLabel = styled.Text`
+  font-size: 18px;
+  color: ${colors.descriptionDarkerGrey};
+`;
+
 const AddItemButton = styled.Pressable`
   background-color: ${colors.iosBlue};
   border-radius: 10px;
@@ -56,13 +61,24 @@ const AddItemButtonInnerText = styled.Text`
 `;
 
 const AddListItemModal = ({ setModalVisibility }) => {
-  const [newTodo, setNewTodo] = useState('');
+  const [newTodo, setNewTodo] = useState({
+    title: '',
+    description: '',
+  });
   const { accountStore } = useContext(MobxContext);
 
   const handleAddItemBtnPress = () => {
+    if (newTodo.title === '') {
+      Alert.alert(
+        'Oops! Something went wrong',
+        'It seems you forgot to enter a title. All TO-DOs should have one.',
+        [{ text: 'OK', onPress: () => console.log('OK pressed') }]
+      );
+      return;
+    }
     accountStore.userLoggedIn.addTodo({
-      title: newTodo,
-      description: newTodo,
+      title: newTodo.title,
+      description: newTodo.description,
     });
     setModalVisibility(false);
   };
@@ -70,9 +86,19 @@ const AddListItemModal = ({ setModalVisibility }) => {
     <SafeAreaContent>
       <ModalCard>
         <ModalText>What else you need to do?</ModalText>
+        <InputLabel>Title</InputLabel>
         <ModalInput
-          onChangeText={(value) => setNewTodo(value)}
+          onChangeText={(value) => setNewTodo({ ...newTodo, title: value })}
           placeholder="Type something i.e 'Go shopping'"
+        />
+        <InputLabel>Description</InputLabel>
+        <ModalInput
+          onChangeText={(value) =>
+            setNewTodo({ ...newTodo, description: value })
+          }
+          placeholder="If needed, type here some notes about the task."
+          multiline
+          numberOfLines={3}
         />
         <Button title="Go back" onPress={() => setModalVisibility(false)} />
         <AddItemButton onPress={() => handleAddItemBtnPress()}>
