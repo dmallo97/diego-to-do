@@ -19,6 +19,7 @@ const ModalCard = styled.View`
   shadow-opacity: 0.25;
   shadow-radius: 4px;
   elevation: 5;
+  width: 100%;
 `;
 
 const SafeAreaContent = styled.SafeAreaView`

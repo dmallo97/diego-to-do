@@ -5,6 +5,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { FlatList } from 'react-native';
+import Emoji from 'react-native-emoji';
 import styled from 'styled-components';
 
 import { MobxContext } from '../models/Root';
@@ -74,7 +75,9 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
   return (
     <SafeAreaContent>
       <ModalCard>
-        <ModalTitle>Hey there!</ModalTitle>
+        <ModalTitle>
+          Hey there! <Emoji name="wave" />
+        </ModalTitle>
         <ModalText>
           To continue, please select the desired account or sign up below.
         </ModalText>
