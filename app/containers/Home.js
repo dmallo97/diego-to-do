@@ -1,9 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 
+import { FontAwesome5 } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { Modal, SafeAreaView, Text } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import styled from 'styled-components';
 
 import Item from '../components/Item';
@@ -37,6 +39,19 @@ const AddItemButtonInnerText = styled.Text`
   font-size: 20px;
 `;
 
+const DeleteActionView = styled.View`
+  background-color: ${colors.iosRed};
+  padding: 15px;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+`;
+
+const DeleteActionText = styled.Text`
+  color: ${colors.white};
+  font-weight: bold;
+`;
+
 const Home = ({ navigation }) => {
   const [addItemModalVisibility, setAddItemModalVisibility] = useState(false);
   const [signInModalVisibility, setSignInModalVisibility] = useState(false);
@@ -48,6 +63,19 @@ const Home = ({ navigation }) => {
       setSignInModalVisibility(false);
     }
   });
+
+  const DeleteAction = () => (
+    <DeleteActionView>
+      <FontAwesome5 name="trash" size={20} color="white" />
+      <DeleteActionText>Delete</DeleteActionText>
+    </DeleteActionView>
+  );
+
+  const DeleteTask = (item) => {
+    console.log('removing todo');
+    accountStore.userLoggedIn.removeTodo(item);
+    console.log('todo should be deleted');
+  };
 
   return (
     <SafeAreaView>
@@ -83,7 +111,12 @@ const Home = ({ navigation }) => {
           }
           keyExtractor={(item, index) => `${item} ${index}`}
           renderItem={({ item }) => (
-            <Item task={item} account={accountStore.userLoggedIn} />
+            <Swipeable
+              renderRightActions={DeleteAction}
+              onSwipeableRightOpen={() => DeleteTask(item)}
+            >
+              <Item task={item} account={accountStore.userLoggedIn} />
+            </Swipeable>
           )}
           ListEmptyComponent={() => (
             <Text>

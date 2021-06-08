@@ -55,7 +55,7 @@ const Container = styled.View`
   flex-direction: column;
   padding: 5px;
   ${'' /* justify-content: center; */}
-  margin: 10px;
+  background-color: ${colors.white};
 `;
 
 const TaskDescriptionContainer = styled.View`
