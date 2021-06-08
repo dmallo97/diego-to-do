@@ -97,8 +97,9 @@ const Users = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <Container>
         <ScreenDescription>
-          ¡Hey {accountStore.userLoggedIn ? accountStore.userLoggedIn.name : ''}
-          ! Not you? Choose another account to see others tasks
+          ¡Hey{' '}
+          {accountStore.userLoggedIn ? accountStore.userLoggedIn.email : ''}!
+          Not you? Choose another account to see others tasks
         </ScreenDescription>
         <UserList
           data={accountStore.accounts ? accountStore.accounts : []} // revisar
@@ -112,12 +113,12 @@ const Users = ({ navigation }) => {
             return (
               <TouchableOpacity onPress={() => handleUserPress(item)}>
                 <UserListRow
-                  selected={item.name === accountStore.userLoggedIn.name}
+                  selected={item.id === accountStore.userLoggedIn.id}
                 >
                   <UserListRowText
-                    selected={item.name === accountStore.userLoggedIn.name}
+                    selected={item.id === accountStore.userLoggedIn.id}
                   >
-                    {item.name}
+                    {item.email}
                   </UserListRowText>
                 </UserListRow>
               </TouchableOpacity>

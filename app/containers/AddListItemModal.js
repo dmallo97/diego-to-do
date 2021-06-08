@@ -80,6 +80,7 @@ const AddListItemModal = ({ setModalVisibility }) => {
     accountStore.userLoggedIn.addTodo({
       title: newTodo.title,
       description: newTodo.description,
+      authorId: accountStore.userLoggedIn.id,
     });
     setModalVisibility(false);
   };

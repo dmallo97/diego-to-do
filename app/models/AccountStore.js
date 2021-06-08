@@ -1,8 +1,11 @@
 import { types, destroy } from 'mobx-state-tree';
 
+import { createAccount } from '../services/AccountService';
+import { createTodo, getTodos } from '../services/TodoService';
+
 const TodoModel = types
   .model({
-    id: types.optional(types.number, 0),
+    id: types.optional(types.string, undefined),
     title: types.string,
     description: types.string,
     isDone: types.optional(types.boolean, false),
@@ -21,23 +24,25 @@ const TodoModel = types
 
 const AccountModel = types
   .model({
-    id: types.optional(types.number, 0),
-    name: types.string,
+    id: types.optional(types.string, undefined),
     email: types.string,
     todoList: types.optional(types.array(TodoModel), []),
   })
   .actions((self) => ({
-    changeName(newName) {
-      self.name = newName;
-    },
-    changeEmail(newEmail) {
-      self.email = newEmail;
-    },
-    addTodo(todoItem) {
-      self.todoList.push(todoItem);
+    addTodo({ title, description, authorId }) {
+      const newTodo = createTodo(title, description, authorId);
+      self.todoList.push({
+        id: newTodo.id,
+        title: newTodo.title,
+        description: newTodo.content,
+      });
     },
     removeTodo(todoItem) {
       destroy(todoItem);
+    },
+    fetchTodos() {
+      const todos = getTodos(self.id);
+      self.todoList = todos;
     },
   }));
 
@@ -47,9 +52,10 @@ const AccountStore = types
     userLoggedIn: types.maybeNull(AccountModel),
   })
   .actions((self) => ({
-    addAccount(account) {
-      self.accounts.push(account);
-      return account;
+    addAccount(email) {
+      const newAccount = createAccount(email);
+      self.accounts.push(newAccount);
+      return newAccount;
     },
     logIn(account) {
       self.userLoggedIn = account;

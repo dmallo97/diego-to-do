@@ -48,24 +48,18 @@ const AddUserButtonInnerText = styled.Text`
 `;
 
 const AddUserModal = ({ navigation }) => {
-  const [newAccountFields, setNewAccountFields] = useState({
-    name: '',
-    email: '',
-  });
+  const [newEmail, setNewEmail] = useState('');
   const { accountStore } = useContext(MobxContext);
   const handleAddUserBtnPress = useCallback(() => {
-    const newAccount = accountStore.addAccount(newAccountFields);
-    setNewAccountFields({
-      name: '',
-      email: '',
-    });
+    const newAccount = accountStore.addAccount(newEmail);
+    setNewEmail('');
     if (!accountStore.userLoggedIn) {
       accountStore.logIn(newAccount);
       navigation.navigate('Home');
     } else {
       navigation.goBack();
     }
-  }, [newAccountFields]);
+  }, [newEmail]);
 
   return (
     <Container>
@@ -73,23 +67,11 @@ const AddUserModal = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <FormCard>
-          <Text style={{ fontSize: 24 }}>
-            Who is going to manage this account?
-          </Text>
-          <Input
-            onChangeText={(value) =>
-              setNewAccountFields({ ...newAccountFields, name: value })
-            }
-            placeholder="John Doe"
-            value={newAccountFields.name}
-          />
           <Text style={{ fontSize: 24 }}>What is his/her email?</Text>
           <Input
-            onChangeText={(value) =>
-              setNewAccountFields({ ...newAccountFields, email: value })
-            }
+            onChangeText={(value) => setNewEmail(value)}
             placeholder="johndoe@example.com"
-            value={newAccountFields.email}
+            value={newEmail}
           />
           <Button
             title="Go back"
