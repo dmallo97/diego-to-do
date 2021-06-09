@@ -2,7 +2,13 @@ import React, { useState, useCallback, useContext } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Text, KeyboardAvoidingView, Platform, Button } from 'react-native';
+import {
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  Button,
+  Alert,
+} from 'react-native';
 import styled from 'styled-components';
 
 import { MobxContext } from '../models/Root';
@@ -52,6 +58,14 @@ const AddUserModal = ({ navigation }) => {
   const { accountStore } = useContext(MobxContext);
   const handleAddUserBtnPress = useCallback(() => {
     const newAccount = accountStore.addAccount(newEmail);
+    if (!newAccount) {
+      Alert.alert(
+        'Oops! Something went wrong',
+        'We couldnt create the account on our side. Check if the email field has been filled',
+        [{ text: 'OK', onPress: () => console.log('OK pressed') }]
+      );
+      return;
+    }
     setNewEmail('');
     if (!accountStore.userLoggedIn) {
       accountStore.logIn(newAccount);

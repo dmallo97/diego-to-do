@@ -1,4 +1,4 @@
-import { types, destroy } from 'mobx-state-tree';
+import { types, destroy, flow } from 'mobx-state-tree';
 
 import { createAccount } from '../services/AccountService';
 import { createTodo, getTodos } from '../services/TodoService';
@@ -29,21 +29,29 @@ const AccountModel = types
     todoList: types.optional(types.array(TodoModel), []),
   })
   .actions((self) => ({
-    addTodo({ title, description, authorId }) {
-      const newTodo = createTodo(title, description, authorId);
-      self.todoList.push({
-        id: newTodo.id,
-        title: newTodo.title,
-        description: newTodo.content,
-      });
-    },
+    addTodo: flow(function* addTodo({ title, description, authorId }) {
+      try {
+        const newTodo = yield createTodo(title, description, authorId);
+        self.todoList.push({
+          id: newTodo.id,
+          title: newTodo.title,
+          description: newTodo.content,
+        });
+      } catch (error) {
+        console.log('Server couldnt create the task: ', error);
+      }
+    }),
     removeTodo(todoItem) {
       destroy(todoItem);
     },
-    fetchTodos() {
-      const todos = getTodos(self.id);
-      self.todoList = todos;
-    },
+    fetchTodos: flow(function* fetchTodos() {
+      try {
+        const todos = yield getTodos(self.id);
+        self.todoList = todos;
+      } catch (error) {
+        console.log('Server couldnt fetch accounts todos: ', error);
+      }
+    }),
   }));
 
 const AccountStore = types
@@ -52,11 +60,17 @@ const AccountStore = types
     userLoggedIn: types.maybeNull(AccountModel),
   })
   .actions((self) => ({
-    addAccount(email) {
-      const newAccount = createAccount(email);
-      self.accounts.push(newAccount);
+    addAccount: flow(function* addAccount(email) {
+      let newAccount;
+      try {
+        newAccount = yield createAccount(email);
+        self.accounts.push(newAccount);
+        return newAccount;
+      } catch (error) {
+        console.log('Server couldnt create the account: ', error);
+      }
       return newAccount;
-    },
+    }),
     logIn(account) {
       self.userLoggedIn = account;
     },
