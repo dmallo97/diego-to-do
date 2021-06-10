@@ -17,4 +17,12 @@ export async function createAccount(someEmail) {
   return response.data;
 }
 
-export default { createAccount };
+export async function getAccounts() {
+  const response = undefined;
+  if (response.status !== 200) {
+    throw new Error('Server was unable to fetch accounts');
+  }
+  return response.data;
+}
+
+export default { createAccount, getAccounts };

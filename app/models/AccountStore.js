@@ -1,7 +1,12 @@
 import { types, destroy, flow } from 'mobx-state-tree';
 
 import { createAccount } from '../services/AccountService';
-import { createTodo, getTodos } from '../services/TodoService';
+import {
+  createTodo,
+  getTodos,
+  deleteTodo,
+  checkTodo,
+} from '../services/TodoService';
 
 const TodoModel = types
   .model({
@@ -17,9 +22,18 @@ const TodoModel = types
     changeDescription(newDescription) {
       self.description = newDescription;
     },
-    markAsDone() {
-      self.isDone = !self.isDone;
-    },
+    markAsDone: flow(function* markAsDone() {
+      try {
+        self.isDone = !self.isDone;
+        yield checkTodo(self);
+      } catch (error) {
+        console.log(
+          'Reverting modifications. Server couldnt check the task as done: ',
+          error
+        );
+        self.isDone = !self.isDone;
+      }
+    }),
   }));
 
 const AccountModel = types
@@ -41,9 +55,14 @@ const AccountModel = types
         console.log('Server couldnt create the task: ', error);
       }
     }),
-    removeTodo(todoItem) {
-      destroy(todoItem);
-    },
+    removeTodo: flow(function* removeTodo(todoItem) {
+      try {
+        yield deleteTodo(todoItem);
+        destroy(todoItem);
+      } catch (error) {
+        console.log('Server couldnt delete the task: ', error);
+      }
+    }),
     fetchTodos: flow(function* fetchTodos() {
       try {
         const todos = yield getTodos(self.id);
@@ -74,6 +93,14 @@ const AccountStore = types
       }
       return newAccount;
     }),
+    /* fetchAccounts: flow(function* fetchAccounts() {
+      try {
+        const accounts = yield getAccounts();
+        self.accounts = accounts;
+      } catch (error) {
+        console.log('Server couldnt fetch accounts: ', error);
+      }
+    }), */
     logIn(account) {
       self.userLoggedIn = account;
     },

@@ -22,4 +22,21 @@ export async function getTodos(accountId) {
   return response.data;
 }
 
-export default { createTodo, getTodos };
+export async function deleteTodo(todoId) {
+  const response = await axios.delete(`http://localhost:3000/todo/${todoId}`);
+  if (response.status !== 200) {
+    throw new Error('Server was unable to delete the specified task');
+  }
+}
+
+export async function checkTodo(todo) {
+  const response = await axios.put(`http://localhost:3000/todo/${todo.id}`, {
+    checked: todo.isDone,
+  });
+  if (response.status !== 200) {
+    throw new Error('Server was unable to update specified task');
+  }
+  return response.data;
+}
+
+export default { createTodo, getTodos, deleteTodo, checkTodo };
