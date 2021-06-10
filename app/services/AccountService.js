@@ -1,12 +1,19 @@
 import axios from 'axios';
 
-export async function createAccount({ someEmail }) {
+export async function createAccount(someEmail) {
+  console.log(
+    'Executing createAction method in AccountService with email: ',
+    someEmail
+  );
   const response = await axios.post('http://localhost:3000/user', {
     email: someEmail,
   });
-  if (response.status !== 201) {
+  console.log('Response from server', response);
+  if (response.status !== 200) {
+    // devuelve 200 en vez de 201
     throw new Error('Server was unable to create the account');
   }
+  console.log('Returning data: ', response.data);
   return response.data;
 }
 

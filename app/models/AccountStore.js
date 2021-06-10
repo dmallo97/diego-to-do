@@ -5,7 +5,7 @@ import { createTodo, getTodos } from '../services/TodoService';
 
 const TodoModel = types
   .model({
-    id: types.optional(types.string, undefined),
+    id: types.optional(types.string, ''),
     title: types.string,
     description: types.string,
     isDone: types.optional(types.boolean, false),
@@ -24,7 +24,7 @@ const TodoModel = types
 
 const AccountModel = types
   .model({
-    id: types.optional(types.string, undefined),
+    id: types.optional(types.string, ''),
     email: types.string,
     todoList: types.optional(types.array(TodoModel), []),
   })
@@ -62,10 +62,13 @@ const AccountStore = types
   .actions((self) => ({
     addAccount: flow(function* addAccount(email) {
       let newAccount;
+      console.log('Trying to create account with email: ', email);
       try {
+        console.log('Inside try');
         newAccount = yield createAccount(email);
+        console.log('Account created: ', newAccount);
         self.accounts.push(newAccount);
-        return newAccount;
+        console.log('Account saved');
       } catch (error) {
         console.log('Server couldnt create the account: ', error);
       }
