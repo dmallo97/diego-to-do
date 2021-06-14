@@ -64,6 +64,13 @@ const Home = ({ navigation }) => {
     }
   });
 
+  useEffect(
+    () => () => {
+      setSignInModalVisibility(false);
+    },
+    []
+  );
+
   const DeleteAction = () => (
     <DeleteActionView>
       <FontAwesome5 name="trash" size={20} color="white" />

@@ -69,8 +69,8 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
     setModalVisibility(false);
   };
   const handleSignUpBtnPress = () => {
-    setModalVisibility(false);
     navigation.navigate('Accounts', { screen: 'AddUserModal' });
+    setModalVisibility(false);
   };
   return (
     <SafeAreaContent>
