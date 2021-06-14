@@ -84,9 +84,13 @@ const AccountStore = types
       console.log('Trying to create account with email: ', email);
       try {
         console.log('Inside try');
+        console.log(self.accounts);
         newAccount = yield createAccount(email);
         console.log('Account created: ', newAccount);
-        self.accounts.push(newAccount);
+        self.accounts.push({
+          id: newAccount.id,
+          email: newAccount.email,
+        });
         console.log('Account saved');
       } catch (error) {
         console.log('Server couldnt create the account: ', error);

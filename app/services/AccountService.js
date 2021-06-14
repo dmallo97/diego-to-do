@@ -5,9 +5,15 @@ export async function createAccount(someEmail) {
     'Executing createAction method in AccountService with email: ',
     someEmail
   );
-  const response = await axios.post('http://localhost:3000/user', {
-    email: someEmail,
-  });
+  let response;
+  try {
+    response = await axios.post('http://localhost:3000/user', {
+      email: someEmail,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
   console.log('Response from server', response);
   if (response.status !== 200) {
     // devuelve 200 en vez de 201
