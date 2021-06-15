@@ -10,6 +10,7 @@ export async function createAccount(someEmail) {
     response = await axios.post('http://localhost:3000/user', {
       email: someEmail,
     });
+    console.log('Server responded :', response);
   } catch (error) {
     console.log(error);
   }
