@@ -56,8 +56,8 @@ const AddUserButtonInnerText = styled.Text`
 const AddUserModal = ({ navigation }) => {
   const [newEmail, setNewEmail] = useState('');
   const { accountStore } = useContext(MobxContext);
-  const handleAddUserBtnPress = useCallback(() => {
-    const newAccount = accountStore.addAccount(newEmail);
+  const handleAddUserBtnPress = useCallback(async () => {
+    const newAccount = await accountStore.addAccount(newEmail);
     if (!newAccount) {
       Alert.alert(
         'Oops! Something went wrong',
@@ -92,8 +92,9 @@ const AddUserModal = ({ navigation }) => {
             onPress={() =>
               navigation.navigate('Accounts', { screen: 'UsersList' })
             }
+            style={{ margin: 10 }}
           />
-          <AddUserButton onPress={() => handleAddUserBtnPress()}>
+          <AddUserButton onPress={handleAddUserBtnPress}>
             <AddUserButtonInnerText>Add account</AddUserButtonInnerText>
           </AddUserButton>
         </FormCard>

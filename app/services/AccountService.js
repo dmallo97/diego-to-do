@@ -7,7 +7,7 @@ export async function createAccount(someEmail) {
   );
   let response;
   try {
-    response = await axios.post('http://localhost:3000/user', {
+    response = await axios.post('http://10.0.2.2:3000/user', {
       email: someEmail,
     });
     console.log('Server responded :', response);
@@ -25,10 +25,12 @@ export async function createAccount(someEmail) {
 }
 
 export async function getAccounts() {
-  const response = undefined;
+  console.log('Inside getAccounts. Calling API...');
+  const response = await axios.get('http://10.0.2.2:3000/users');
   if (response.status !== 200) {
     throw new Error('Server was unable to fetch accounts');
   }
+  console.log('Returning...');
   return response.data;
 }
 

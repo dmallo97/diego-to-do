@@ -1,6 +1,6 @@
 import { types, destroy, flow } from 'mobx-state-tree';
 
-import { createAccount } from '../services/AccountService';
+import { createAccount, getAccounts } from '../services/AccountService';
 import {
   createTodo,
   getTodos,
@@ -34,7 +34,8 @@ const TodoModel = types
         self.isDone = !self.isDone;
       }
     }),
-  }));
+  }))
+  .named('TodoModel');
 
 const AccountModel = types
   .model({
@@ -71,7 +72,8 @@ const AccountModel = types
         console.log('Server couldnt fetch accounts todos: ', error);
       }
     }),
-  }));
+  }))
+  .named('AccountModel');
 
 const AccountStore = types
   .model({
@@ -87,30 +89,39 @@ const AccountStore = types
         console.log(self.accounts);
         newAccount = yield createAccount(email);
         console.log('Account created: ', newAccount);
-        self.accounts.push({
-          id: newAccount.id,
-          email: newAccount.email,
-        });
+        self.accounts.push(newAccount);
         console.log('Account saved');
       } catch (error) {
         console.log('Server couldnt create the account: ', error);
       }
       return newAccount;
     }),
-    /* fetchAccounts: flow(function* fetchAccounts() {
+    fetchAccounts: flow(function* fetchAccounts() {
       try {
-        const accounts = yield getAccounts();
-        self.accounts = accounts;
+        console.log(
+          'Inside fetchAccount action try block. Executing getAccounts service method'
+        );
+        const responseDataObject = yield getAccounts();
+        console.log('Ready to assign fetched data...');
+        self.accounts = responseDataObject.users;
+        console.log(
+          'After saving data into store. Exiting fetchAccounts method.'
+        );
       } catch (error) {
         console.log('Server couldnt fetch accounts: ', error);
       }
-    }), */
+    }),
     logIn(account) {
+      console.log('Trying to log in ', account);
+      self.userLoggedIn = undefined;
+      console.log('Currently logged in: ', self.userLoggedIn);
       self.userLoggedIn = account;
+      console.log('User was logged in: ', self.userLoggedIn);
     },
     logOut() {
       self.userLoggedIn = undefined;
     },
-  }));
+  }))
+  .named('Store');
 
 export default AccountStore;
