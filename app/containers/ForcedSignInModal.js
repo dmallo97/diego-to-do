@@ -39,11 +39,11 @@ const UserListRow = styled.Pressable`
   border-radius: 10px;
   border-width: 1px;
   margin: 5px;
-  padding: 15px;
+  padding: 10px;
 `;
 
 const UserListRowText = styled.Text`
-  font-size: 20px;
+  font-size: 16px;
   color: black;
 `;
 
@@ -94,7 +94,7 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
     </UserListRow>
   );
 
-  // console.log(accountStore.accounts);
+  console.log(accountStore.accounts);
   return (
     <SafeAreaContent>
       <ModalCard>

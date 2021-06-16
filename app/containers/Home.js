@@ -56,6 +56,11 @@ const Home = ({ navigation }) => {
   const [addItemModalVisibility, setAddItemModalVisibility] = useState(false);
   const [signInModalVisibility, setSignInModalVisibility] = useState(false);
   const { accountStore } = useContext(MobxContext);
+  const [todoListData, setTodoListData] = useState(
+    accountStore.userLoggedIn?.todoList
+  );
+  const [listRefreshing, setListRefreshing] = useState(false);
+
   useEffect(() => {
     if (!accountStore.userLoggedIn) {
       setSignInModalVisibility(true);
@@ -64,9 +69,17 @@ const Home = ({ navigation }) => {
     }
   });
 
+  const handleRefresh = () => {
+    setListRefreshing(true);
+    accountStore.userLoggedIn.fetchTodos();
+    setTodoListData(accountStore.userLoggedIn.todoList);
+    setListRefreshing(false);
+  };
+
   useEffect(
     () => () => {
       setSignInModalVisibility(false);
+      handleRefresh();
     },
     []
   );
@@ -113,9 +126,9 @@ const Home = ({ navigation }) => {
           translucent={false}
         />
         <ToDoList
-          data={
-            accountStore.userLoggedIn ? accountStore.userLoggedIn.todoList : []
-          }
+          data={todoListData}
+          refreshing={listRefreshing}
+          onRefresh={handleRefresh}
           keyExtractor={(item, index) => `${item} ${index}`}
           renderItem={({ item }) => (
             <Swipeable

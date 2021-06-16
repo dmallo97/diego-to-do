@@ -10,7 +10,7 @@ import {
 
 const TodoModel = types
   .model({
-    id: types.optional(types.string, ''),
+    id: types.identifier,
     title: types.string,
     description: types.string,
     isDone: types.optional(types.boolean, false),
@@ -39,19 +39,26 @@ const TodoModel = types
 
 const AccountModel = types
   .model({
-    id: types.optional(types.string, ''),
+    id: types.identifier,
     email: types.string,
     todoList: types.optional(types.array(TodoModel), []),
   })
   .actions((self) => ({
     addTodo: flow(function* addTodo({ title, description, authorId }) {
       try {
+        console.log('Inside addTodo action try block...');
         const newTodo = yield createTodo(title, description, authorId);
+        console.log(
+          'Returned todo: ',
+          newTodo,
+          'Trying to push into account...'
+        );
         self.todoList.push({
           id: newTodo.id,
           title: newTodo.title,
           description: newTodo.content,
         });
+        console.log('Todo pushed. Finishing action.');
       } catch (error) {
         console.log('Server couldnt create the task: ', error);
       }
@@ -66,8 +73,8 @@ const AccountModel = types
     }),
     fetchTodos: flow(function* fetchTodos() {
       try {
-        const todos = yield getTodos(self.id);
-        self.todoList = todos;
+        const responseDataObject = yield getTodos(self.id);
+        self.todoList = responseDataObject.todos;
       } catch (error) {
         console.log('Server couldnt fetch accounts todos: ', error);
       }
@@ -78,7 +85,7 @@ const AccountModel = types
 const AccountStore = types
   .model({
     accounts: types.optional(types.array(AccountModel), []),
-    userLoggedIn: types.maybeNull(AccountModel),
+    userLoggedIn: types.maybeNull(types.reference(AccountModel)),
   })
   .actions((self) => ({
     addAccount: flow(function* addAccount(email) {

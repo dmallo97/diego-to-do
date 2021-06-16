@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useState, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
@@ -58,6 +58,8 @@ const UserListRowText = styled.Text`
 
 const Users = ({ navigation }) => {
   const { accountStore } = useContext(MobxContext);
+  const [listRefreshing, setListRefreshing] = useState(false);
+  const [accountListData, setAccountListData] = useState([]);
   /* const handleUserPress = (account) => {
     console.log('Account pressed: ', account);
     console.log('User logged in: ', accountStore.userLoggedIn);
@@ -71,17 +73,33 @@ const Users = ({ navigation }) => {
     accountStore.logIn(account);
     navigation.navigate('Home');
   }; */
+
+  const getAccounts = async () => {
+    await accountStore.fetchAccounts();
+  };
+
+  const handleRefresh = () => {
+    setListRefreshing(true);
+    getAccounts();
+    setAccountListData(accountStore.accounts);
+    setListRefreshing(false);
+    console.log('Accounts: ', accountStore.accounts);
+  };
+
+  useEffect(() => {
+    handleRefresh();
+  }, []);
+
   const handleAddUserBtnPress = () => {
     navigation.navigate('AddUserModal');
   };
 
   const handleUserPress = useCallback((account) => {
     console.log('Account pressed: ', account);
-    console.log('User logged in: ', accountStore.userLoggedIn);
     if (!account) {
       return;
     }
-    if (account.name === accountStore.userLoggedIn.name) {
+    if (account.id === accountStore.userLoggedIn.id) {
       return; // deberia evaluarse id
     }
     accountStore.logOut();
@@ -102,11 +120,12 @@ const Users = ({ navigation }) => {
           Not you? Choose another account to see others tasks
         </ScreenDescription>
         <UserList
-          data={accountStore.accounts ? accountStore.accounts : []} // revisar
+          data={accountListData} // revisar
           keyExtractor={(item, index) => `${item} ${index}`}
+          refreshing={listRefreshing}
+          onRefresh={handleRefresh}
+          extraData={listRefreshing}
           renderItem={({ item }) => {
-            console.log('Account inside render item', item);
-            console.log('Account store inside render item', accountStore);
             if (!item) {
               return <Text>Couldnt display account</Text>;
             }

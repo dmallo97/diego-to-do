@@ -1,19 +1,21 @@
 import axios from 'axios';
 
-export async function createTodo({ someTitle, someDescription, someAuthorId }) {
-  const response = await axios.post('http://localhost:3000/todo', {
+export async function createTodo(someTitle, someDescription, someAuthorId) {
+  const response = await axios.post('http://10.0.2.2:3000/todo', {
     title: someTitle,
     content: someDescription,
     authorId: someAuthorId,
   });
-  if (response.status !== 201) {
+  console.log(response);
+  if (response.status !== 200) {
+    // devuelve 200 en vez de 201
     throw new Error('Server was unable to create the task');
   }
   return response.data;
 }
 
 export async function getTodos(accountId) {
-  const response = await axios.get(`http://localhost:3000/todos/${accountId}`);
+  const response = await axios.get(`http://10.0.2.2:3000/todos/${accountId}`);
   if (response.status !== 200) {
     throw new Error(
       'Server was unable to fetch the tasks for the specified account'
@@ -23,14 +25,14 @@ export async function getTodos(accountId) {
 }
 
 export async function deleteTodo(todoId) {
-  const response = await axios.delete(`http://localhost:3000/todo/${todoId}`);
+  const response = await axios.delete(`http://10.0.2.2:3000/todo/${todoId}`);
   if (response.status !== 200) {
     throw new Error('Server was unable to delete the specified task');
   }
 }
 
 export async function checkTodo(todo) {
-  const response = await axios.put(`http://localhost:3000/todo/${todo.id}`, {
+  const response = await axios.put(`http://10.0.2.2:3000/todo/${todo.id}`, {
     checked: todo.isDone,
   });
   if (response.status !== 200) {
