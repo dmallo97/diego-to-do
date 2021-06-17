@@ -2,7 +2,13 @@ import React, { useState, useCallback, useContext } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
-import { Text, KeyboardAvoidingView, Platform, Button } from 'react-native';
+import {
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  Button,
+  Alert,
+} from 'react-native';
 import styled from 'styled-components';
 
 import { MobxContext } from '../models/Root';
@@ -48,24 +54,26 @@ const AddUserButtonInnerText = styled.Text`
 `;
 
 const AddUserModal = ({ navigation }) => {
-  const [newAccountFields, setNewAccountFields] = useState({
-    name: '',
-    email: '',
-  });
+  const [newEmail, setNewEmail] = useState('');
   const { accountStore } = useContext(MobxContext);
-  const handleAddUserBtnPress = useCallback(() => {
-    const newAccount = accountStore.addAccount(newAccountFields);
-    setNewAccountFields({
-      name: '',
-      email: '',
-    });
+  const handleAddUserBtnPress = useCallback(async () => {
+    const newAccount = await accountStore.addAccount(newEmail);
+    if (!newAccount) {
+      Alert.alert(
+        'Oops! Something went wrong',
+        'We couldnt create the account on our side. Check if the email field has been filled',
+        [{ text: 'OK', onPress: () => console.log('OK pressed') }]
+      );
+      return;
+    }
+    setNewEmail('');
     if (!accountStore.userLoggedIn) {
       accountStore.logIn(newAccount);
       navigation.navigate('Home');
     } else {
       navigation.goBack();
     }
-  }, [newAccountFields]);
+  }, [newEmail]);
 
   return (
     <Container>
@@ -73,31 +81,20 @@ const AddUserModal = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <FormCard>
-          <Text style={{ fontSize: 24 }}>
-            Who is going to manage this account?
-          </Text>
-          <Input
-            onChangeText={(value) =>
-              setNewAccountFields({ ...newAccountFields, name: value })
-            }
-            placeholder="John Doe"
-            value={newAccountFields.name}
-          />
           <Text style={{ fontSize: 24 }}>What is his/her email?</Text>
           <Input
-            onChangeText={(value) =>
-              setNewAccountFields({ ...newAccountFields, email: value })
-            }
+            onChangeText={(value) => setNewEmail(value)}
             placeholder="johndoe@example.com"
-            value={newAccountFields.email}
+            value={newEmail}
           />
           <Button
             title="Go back"
             onPress={() =>
               navigation.navigate('Accounts', { screen: 'UsersList' })
             }
+            style={{ margin: 10 }}
           />
-          <AddUserButton onPress={() => handleAddUserBtnPress()}>
+          <AddUserButton onPress={handleAddUserBtnPress}>
             <AddUserButtonInnerText>Add account</AddUserButtonInnerText>
           </AddUserButton>
         </FormCard>

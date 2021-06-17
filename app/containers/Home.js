@@ -50,12 +50,18 @@ const DeleteActionView = styled.View`
 const DeleteActionText = styled.Text`
   color: ${colors.white};
   font-weight: bold;
+  margin-left: 10px;
 `;
 
 const Home = ({ navigation }) => {
   const [addItemModalVisibility, setAddItemModalVisibility] = useState(false);
   const [signInModalVisibility, setSignInModalVisibility] = useState(false);
   const { accountStore } = useContext(MobxContext);
+  const [todoListData, setTodoListData] = useState(
+    accountStore.userLoggedIn?.todoList
+  );
+  const [listRefreshing, setListRefreshing] = useState(false);
+
   useEffect(() => {
     if (!accountStore.userLoggedIn) {
       setSignInModalVisibility(true);
@@ -64,6 +70,21 @@ const Home = ({ navigation }) => {
     }
   });
 
+  const handleRefresh = async () => {
+    setListRefreshing(true);
+    await accountStore.userLoggedIn.fetchTodos();
+    setTodoListData(accountStore.userLoggedIn.todoList);
+    setListRefreshing(false);
+  };
+
+  useEffect(
+    () => () => {
+      setSignInModalVisibility(false);
+      handleRefresh();
+    },
+    []
+  );
+
   const DeleteAction = () => (
     <DeleteActionView>
       <FontAwesome5 name="trash" size={20} color="white" />
@@ -71,12 +92,13 @@ const Home = ({ navigation }) => {
     </DeleteActionView>
   );
 
-  const DeleteTask = (item) => {
+  const DeleteTask = async (item) => {
     console.log('removing todo');
-    accountStore.userLoggedIn.removeTodo(item);
+    await accountStore.userLoggedIn.removeTodo(item);
     console.log('todo should be deleted');
   };
 
+  console.log('Rendering Home');
   return (
     <SafeAreaView>
       <Container>
@@ -106,9 +128,9 @@ const Home = ({ navigation }) => {
           translucent={false}
         />
         <ToDoList
-          data={
-            accountStore.userLoggedIn ? accountStore.userLoggedIn.todoList : []
-          }
+          data={todoListData}
+          refreshing={listRefreshing}
+          onRefresh={handleRefresh}
           keyExtractor={(item, index) => `${item} ${index}`}
           renderItem={({ item }) => (
             <Swipeable

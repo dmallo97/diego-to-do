@@ -77,9 +77,11 @@ const AddListItemModal = ({ setModalVisibility }) => {
       );
       return;
     }
+    console.log('Executing handler...');
     accountStore.userLoggedIn.addTodo({
       title: newTodo.title,
       description: newTodo.description,
+      authorId: accountStore.userLoggedIn.id,
     });
     setModalVisibility(false);
   };

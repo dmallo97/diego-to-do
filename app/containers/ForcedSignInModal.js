@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
@@ -37,15 +37,14 @@ const ModalText = styled.Text`
 
 const UserListRow = styled.Pressable`
   border-radius: 10px;
-  padding: 35px;
-  shadow-color: ${colors.black};
-  shadow-opacity: 0.25;
-  shadow-radius: 4px;
-  elevation: 5;
+  border-width: 1px;
+  margin: 5px;
+  padding: 10px;
 `;
 
 const UserListRowText = styled.Text`
-  font-size: 20px;
+  font-size: 16px;
+  color: black;
 `;
 
 const SignUpButton = styled.Pressable`
@@ -63,15 +62,39 @@ const SignUpButtonInnerText = styled.Text`
 
 const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
   const { accountStore } = useContext(MobxContext);
-  // const navigation = useNavigation();
-  const handleSignIn = (account) => {
-    accountStore.logIn(account);
+  const [listRefreshing, setListRefreshing] = useState(false);
+  const [accountListData, setAccountListData] = useState([]);
+
+  const getAccounts = async () => {
+    await accountStore.fetchAccounts();
+  };
+
+  useEffect(() => {
+    setListRefreshing(true);
+    console.log('Inside sign in modal effect. Executing getAccounts method');
+    getAccounts();
+    setAccountListData(accountStore.accounts);
+    console.log('After executing getAccounts');
+    setListRefreshing(false);
+  }, []);
+
+  const handleSignIn = async (account) => {
+    await accountStore.logIn(account);
     setModalVisibility(false);
   };
+
   const handleSignUpBtnPress = () => {
-    setModalVisibility(false);
     navigation.navigate('Accounts', { screen: 'AddUserModal' });
+    setModalVisibility(false);
   };
+
+  const renderAccount = (item) => (
+    <UserListRow onPress={() => handleSignIn(item)}>
+      <UserListRowText>{item?.email}</UserListRowText>
+    </UserListRow>
+  );
+
+  console.log(accountStore.accounts);
   return (
     <SafeAreaContent>
       <ModalCard>
@@ -82,13 +105,12 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
           To continue, please select the desired account or sign up below.
         </ModalText>
         <FlatList
-          data={accountStore.accounts}
-          keyExtractor={(account) => account.id}
-          renderItem={({ account }) => (
-            <UserListRow onPress={() => handleSignIn(account)}>
-              <UserListRowText>{account.name}</UserListRowText>
-            </UserListRow>
-          )}
+          data={accountListData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => renderAccount(item)}
+          refreshing={listRefreshing}
+          style={{ margin: 10 }}
+          extraData={accountStore.accounts}
         />
         <SignUpButton onPress={() => handleSignUpBtnPress()}>
           <SignUpButtonInnerText>

@@ -72,6 +72,7 @@ export default function App() {
 
               return <Ionicons name={iconName} size={25} color={color} />;
             },
+            unmountOnBlur: true,
           })}
           tabBarOptions={{
             activeTintColor: colors.iosBlue,
