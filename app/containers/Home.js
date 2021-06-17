@@ -97,6 +97,7 @@ const Home = ({ navigation }) => {
     console.log('todo should be deleted');
   };
 
+  console.log('Rendering Home');
   return (
     <SafeAreaView>
       <Container>

@@ -15,6 +15,7 @@ const Item = ({ task, account }) => {
     // account.removeTodo(task);
     console.log('Account after task removal: ', account);
   };
+  console.log('Rendering todo: ', task);
   return (
     <Container>
       <BouncyCheckbox

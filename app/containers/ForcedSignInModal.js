@@ -78,8 +78,8 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
     setListRefreshing(false);
   }, []);
 
-  const handleSignIn = (account) => {
-    accountStore.logIn(account);
+  const handleSignIn = async (account) => {
+    await accountStore.logIn(account);
     setModalVisibility(false);
   };
 

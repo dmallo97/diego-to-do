@@ -12,7 +12,7 @@ const TodoModel = types
   .model({
     id: types.identifier,
     title: types.string,
-    description: types.string,
+    description: types.maybe(types.string),
     isDone: types.optional(types.boolean, false),
   })
   .actions((self) => ({
@@ -73,8 +73,11 @@ const AccountModel = types
     }),
     fetchTodos: flow(function* fetchTodos() {
       try {
+        console.log('Inside action fetchTodos try block...', 'Fetching todos');
         const responseDataObject = yield getTodos(self.id);
+        console.log('Response from server: ', responseDataObject);
         self.todoList = responseDataObject.todos;
+        console.log('Todos fetched and assigned to MST');
       } catch (error) {
         console.log('Server couldnt fetch accounts todos: ', error);
       }
@@ -118,13 +121,19 @@ const AccountStore = types
         console.log('Server couldnt fetch accounts: ', error);
       }
     }),
-    logIn(account) {
+    logIn: flow(function* logIn(account) {
       console.log('Trying to log in ', account);
       self.userLoggedIn = undefined;
       console.log('Currently logged in: ', self.userLoggedIn);
       self.userLoggedIn = account;
-      console.log('User was logged in: ', self.userLoggedIn);
-    },
+      console.log(
+        'User was logged in: ',
+        self.userLoggedIn,
+        'Fetching accounts todos...'
+      );
+      yield self.userLoggedIn.fetchTodos();
+      console.log('Finishing log in action');
+    }),
     logOut() {
       self.userLoggedIn = undefined;
     },
