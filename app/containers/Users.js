@@ -87,6 +87,7 @@ const Users = ({ navigation }) => {
   };
 
   useEffect(() => {
+    console.log('Inside Users effect');
     handleRefresh();
     return () => {
       setAccountListData([]);
