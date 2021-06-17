@@ -88,6 +88,10 @@ const Users = ({ navigation }) => {
 
   useEffect(() => {
     handleRefresh();
+    return () => {
+      setAccountListData([]);
+      setListRefreshing(false);
+    };
   }, []);
 
   const handleAddUserBtnPress = () => {

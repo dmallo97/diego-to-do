@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
@@ -8,12 +8,13 @@ import styled from 'styled-components';
 import colors from '../styles/constants/Colors';
 
 const Item = ({ task, account }) => {
-  const handlePress = () => {
+  const [checked, setChecked] = useState(task.isDone);
+  const handlePress = async () => {
     console.log('Task pressed: ', task);
-    task.markAsDone();
+    await task.markAsDone();
+    setChecked(!checked);
     console.log('Task status in MST: ', task.isDone);
-    // account.removeTodo(task);
-    console.log('Account after task removal: ', account);
+    console.log(account);
   };
   console.log('Rendering todo: ', task);
   return (
@@ -21,7 +22,7 @@ const Item = ({ task, account }) => {
       <BouncyCheckbox
         size={35}
         text={task.title}
-        isChecked={task.isDone}
+        isChecked={checked}
         onPress={() => handlePress()}
         fillColor={colors.iosBlue}
         unfillColor={colors.white}

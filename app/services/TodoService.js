@@ -26,6 +26,7 @@ export async function getTodos(accountId) {
 
 export async function deleteTodo(todoId) {
   const response = await axios.delete(`http://10.0.2.2:3000/todo/${todoId}`);
+  console.log('Server response: ', response);
   if (response.status !== 200) {
     throw new Error('Server was unable to delete the specified task');
   }
@@ -33,7 +34,7 @@ export async function deleteTodo(todoId) {
 
 export async function checkTodo(todo) {
   const response = await axios.put(`http://10.0.2.2:3000/todo/${todo.id}`, {
-    checked: todo.isDone,
+    checked: !todo.isDone,
   });
   if (response.status !== 200) {
     throw new Error('Server was unable to update specified task');

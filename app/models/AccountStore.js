@@ -8,6 +8,19 @@ import {
   checkTodo,
 } from '../services/TodoService';
 
+const normalizeModelList = (todosList) => {
+  const normalizedList = [];
+  todosList.forEach(function (todo) {
+    normalizedList.push({
+      id: todo.id,
+      title: todo.title,
+      description: todo.content,
+      isDone: todo.checked,
+    });
+  });
+  return normalizedList;
+};
+
 const TodoModel = types
   .model({
     id: types.identifier,
@@ -24,14 +37,10 @@ const TodoModel = types
     },
     markAsDone: flow(function* markAsDone() {
       try {
-        self.isDone = !self.isDone;
         yield checkTodo(self);
-      } catch (error) {
-        console.log(
-          'Reverting modifications. Server couldnt check the task as done: ',
-          error
-        );
         self.isDone = !self.isDone;
+      } catch (error) {
+        console.log('Server couldnt check the task as done: ', error);
       }
     }),
   }))
@@ -65,7 +74,7 @@ const AccountModel = types
     }),
     removeTodo: flow(function* removeTodo(todoItem) {
       try {
-        yield deleteTodo(todoItem);
+        yield deleteTodo(todoItem.id);
         destroy(todoItem);
       } catch (error) {
         console.log('Server couldnt delete the task: ', error);
@@ -76,8 +85,8 @@ const AccountModel = types
         console.log('Inside action fetchTodos try block...', 'Fetching todos');
         const responseDataObject = yield getTodos(self.id);
         console.log('Response from server: ', responseDataObject);
-        self.todoList = responseDataObject.todos;
-        console.log('Todos fetched and assigned to MST');
+        self.todoList = normalizeModelList(responseDataObject.todos);
+        console.log('Todos fetched, normalized and assigned to MST');
       } catch (error) {
         console.log('Server couldnt fetch accounts todos: ', error);
       }

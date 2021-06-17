@@ -50,6 +50,7 @@ const DeleteActionView = styled.View`
 const DeleteActionText = styled.Text`
   color: ${colors.white};
   font-weight: bold;
+  margin-left: 10px;
 `;
 
 const Home = ({ navigation }) => {
@@ -69,9 +70,9 @@ const Home = ({ navigation }) => {
     }
   });
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setListRefreshing(true);
-    accountStore.userLoggedIn.fetchTodos();
+    await accountStore.userLoggedIn.fetchTodos();
     setTodoListData(accountStore.userLoggedIn.todoList);
     setListRefreshing(false);
   };
@@ -91,9 +92,9 @@ const Home = ({ navigation }) => {
     </DeleteActionView>
   );
 
-  const DeleteTask = (item) => {
+  const DeleteTask = async (item) => {
     console.log('removing todo');
-    accountStore.userLoggedIn.removeTodo(item);
+    await accountStore.userLoggedIn.removeTodo(item);
     console.log('todo should be deleted');
   };
 
