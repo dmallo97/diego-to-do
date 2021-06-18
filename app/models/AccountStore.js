@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { types, destroy, flow } from 'mobx-state-tree';
 
 import { createAccount, getAccounts } from '../services/AccountService';
@@ -10,7 +11,7 @@ import {
 
 const normalizeModelList = (todosList) => {
   const normalizedList = [];
-  todosList.forEach(function (todo) {
+  todosList.forEach(function normalize(todo) {
     normalizedList.push({
       id: todo.id,
       title: todo.title,
@@ -55,19 +56,12 @@ const AccountModel = types
   .actions((self) => ({
     addTodo: flow(function* addTodo({ title, description, authorId }) {
       try {
-        console.log('Inside addTodo action try block...');
         const newTodo = yield createTodo(title, description, authorId);
-        console.log(
-          'Returned todo: ',
-          newTodo,
-          'Trying to push into account...'
-        );
         self.todoList.push({
           id: newTodo.id,
           title: newTodo.title,
           description: newTodo.content,
         });
-        console.log('Todo pushed. Finishing action.');
       } catch (error) {
         console.log('Server couldnt create the task: ', error);
       }
@@ -82,11 +76,8 @@ const AccountModel = types
     }),
     fetchTodos: flow(function* fetchTodos() {
       try {
-        console.log('Inside action fetchTodos try block...', 'Fetching todos');
         const responseDataObject = yield getTodos(self.id);
-        console.log('Response from server: ', responseDataObject);
         self.todoList = normalizeModelList(responseDataObject.todos);
-        console.log('Todos fetched, normalized and assigned to MST');
       } catch (error) {
         console.log('Server couldnt fetch accounts todos: ', error);
       }
@@ -102,14 +93,9 @@ const AccountStore = types
   .actions((self) => ({
     addAccount: flow(function* addAccount(email) {
       let newAccount;
-      console.log('Trying to create account with email: ', email);
       try {
-        console.log('Inside try');
-        console.log(self.accounts);
         newAccount = yield createAccount(email);
-        console.log('Account created: ', newAccount);
         self.accounts.push(newAccount);
-        console.log('Account saved');
       } catch (error) {
         console.log('Server couldnt create the account: ', error);
       }
@@ -117,31 +103,16 @@ const AccountStore = types
     }),
     fetchAccounts: flow(function* fetchAccounts() {
       try {
-        console.log(
-          'Inside fetchAccount action try block. Executing getAccounts service method'
-        );
         const responseDataObject = yield getAccounts();
-        console.log('Ready to assign fetched data...');
         self.accounts = responseDataObject.users;
-        console.log(
-          'After saving data into store. Exiting fetchAccounts method.'
-        );
       } catch (error) {
         console.log('Server couldnt fetch accounts: ', error);
       }
     }),
     logIn: flow(function* logIn(account) {
-      console.log('Trying to log in ', account);
       self.userLoggedIn = undefined;
-      console.log('Currently logged in: ', self.userLoggedIn);
       self.userLoggedIn = account.id;
-      console.log(
-        'User was logged in: ',
-        self.userLoggedIn,
-        'Fetching accounts todos...'
-      );
       yield self.userLoggedIn.fetchTodos();
-      console.log('Finishing log in action');
     }),
     logOut() {
       self.userLoggedIn = undefined;

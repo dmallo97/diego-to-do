@@ -9,7 +9,6 @@ export async function createTodo(someTitle, someDescription, someAuthorId) {
     content: someDescription,
     authorId: someAuthorId,
   });
-  console.log(response);
   if (response.status !== 200) {
     // devuelve 200 en vez de 201
     throw new Error('Server was unable to create the task');
@@ -29,7 +28,6 @@ export async function getTodos(accountId) {
 
 export async function deleteTodo(todoId) {
   const response = await axios.delete(`http://${url}:3000/todo/${todoId}`);
-  console.log('Server response: ', response);
   if (response.status !== 200) {
     throw new Error('Server was unable to delete the specified task');
   }

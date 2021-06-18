@@ -70,12 +70,10 @@ const Home = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log('Inside everytime-run Home effect');
     if (!accountStore.userLoggedIn) {
       setSignInModalVisibility(true);
     } else {
       setSignInModalVisibility(false);
-      // handleRefresh();
     }
   });
 
@@ -85,9 +83,7 @@ const Home = ({ navigation }) => {
 
   useEffect(
     () => () => {
-      console.log('Inside one time run Home effect');
       setSignInModalVisibility(false);
-      // handleRefresh();
     },
     []
   );
@@ -100,11 +96,10 @@ const Home = ({ navigation }) => {
   );
 
   const DeleteTask = async (item) => {
-    console.log('removing todo');
     await accountStore.userLoggedIn.removeTodo(item);
-    console.log('todo should be deleted');
   };
 
+  // eslint-disable-next-line no-console
   console.log('Rendering Home');
   return (
     <SafeAreaView>

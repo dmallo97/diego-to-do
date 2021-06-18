@@ -7,16 +7,13 @@ import styled from 'styled-components';
 
 import colors from '../styles/constants/Colors';
 
-const Item = ({ task, account }) => {
+const Item = ({ task }) => {
   const [checked, setChecked] = useState(task.isDone);
   const handlePress = async () => {
-    console.log('Task pressed: ', task);
     await task.markAsDone();
     setChecked(!checked);
-    console.log('Task status in MST: ', task.isDone);
-    console.log(account);
   };
-  console.log('Rendering todo: ', task);
+
   return (
     <Container>
       <BouncyCheckbox
@@ -56,7 +53,6 @@ const Container = styled.View`
   display: flex;
   flex-direction: column;
   padding: 5px;
-  ${'' /* justify-content: center; */}
   background-color: ${colors.white};
 `;
 

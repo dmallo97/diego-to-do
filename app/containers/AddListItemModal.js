@@ -73,11 +73,10 @@ const AddListItemModal = ({ setModalVisibility }) => {
       Alert.alert(
         'Oops! Something went wrong',
         'It seems you forgot to enter a title. All TO-DOs should have one.',
-        [{ text: 'OK', onPress: () => console.log('OK pressed') }]
+        [{ text: 'OK', onPress: () => {} }]
       );
       return;
     }
-    console.log('Executing handler...');
     accountStore.userLoggedIn.addTodo({
       title: newTodo.title,
       description: newTodo.description,

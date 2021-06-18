@@ -1,7 +1,6 @@
 /* eslint-disable react/require-default-props */
 import React, { useContext, useEffect, useState } from 'react';
 
-// import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import PropTypes from 'prop-types';
 import { FlatList } from 'react-native';
@@ -71,10 +70,8 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
 
   useEffect(() => {
     setListRefreshing(true);
-    console.log('Inside sign in modal effect. Executing getAccounts method');
     getAccounts();
     setAccountListData(accountStore.accounts);
-    console.log('After executing getAccounts');
     setListRefreshing(false);
   }, []);
 
@@ -94,6 +91,7 @@ const ForcedSignInModal = ({ navigation, setModalVisibility }) => {
     </UserListRow>
   );
 
+  // eslint-disable-next-line no-console
   console.log(accountStore.accounts);
   return (
     <SafeAreaContent>

@@ -62,7 +62,7 @@ const AddUserModal = ({ navigation }) => {
       Alert.alert(
         'Oops! Something went wrong',
         'We couldnt create the account on our side. Check if the email field has been filled',
-        [{ text: 'OK', onPress: () => console.log('OK pressed') }]
+        [{ text: 'OK', onPress: () => {} }]
       );
       return;
     }

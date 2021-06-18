@@ -60,19 +60,6 @@ const Users = ({ navigation }) => {
   const { accountStore } = useContext(MobxContext);
   const [listRefreshing, setListRefreshing] = useState(false);
   const [accountListData, setAccountListData] = useState([]);
-  /* const handleUserPress = (account) => {
-    console.log('Account pressed: ', account);
-    console.log('User logged in: ', accountStore.userLoggedIn);
-    if (!account) {
-      return;
-    }
-    if (account.name === accountStore.userLoggedIn.name) {
-      return; // deberia evaluarse id
-    }
-    accountStore.logOut();
-    accountStore.logIn(account);
-    navigation.navigate('Home');
-  }; */
 
   const getAccounts = async () => {
     await accountStore.fetchAccounts();
@@ -83,11 +70,9 @@ const Users = ({ navigation }) => {
     await getAccounts();
     setAccountListData(accountStore.accounts);
     setListRefreshing(false);
-    console.log('Accounts: ', accountStore.accounts);
   };
 
   useEffect(() => {
-    console.log('Inside Users effect');
     handleRefresh();
     return () => {
       setAccountListData([]);
@@ -100,19 +85,14 @@ const Users = ({ navigation }) => {
   };
 
   const handleUserPress = useCallback((account) => {
-    console.log('Account pressed: ', account);
     if (!account) {
       return;
     }
     if (account.id === accountStore.userLoggedIn.id) {
-      return; // deberia evaluarse id
+      return;
     }
     accountStore.logOut();
     accountStore.logIn(account);
-    console.log(
-      'Account logged in after executing function: ',
-      accountStore.userLoggedIn
-    );
     navigation.navigate('Home');
   }, []);
 
