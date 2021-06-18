@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { Platform } from 'react-native';
+
+const url = Platform.OS === 'ios' ? 'localhost' : '10.0.2.2';
 
 export async function createTodo(someTitle, someDescription, someAuthorId) {
-  const response = await axios.post('http://10.0.2.2:3000/todo', {
+  const response = await axios.post(`http://${url}:3000/todo`, {
     title: someTitle,
     content: someDescription,
     authorId: someAuthorId,
@@ -15,7 +18,7 @@ export async function createTodo(someTitle, someDescription, someAuthorId) {
 }
 
 export async function getTodos(accountId) {
-  const response = await axios.get(`http://10.0.2.2:3000/todos/${accountId}`);
+  const response = await axios.get(`http://${url}:3000/todos/${accountId}`);
   if (response.status !== 200) {
     throw new Error(
       'Server was unable to fetch the tasks for the specified account'
@@ -25,7 +28,7 @@ export async function getTodos(accountId) {
 }
 
 export async function deleteTodo(todoId) {
-  const response = await axios.delete(`http://10.0.2.2:3000/todo/${todoId}`);
+  const response = await axios.delete(`http://${url}:3000/todo/${todoId}`);
   console.log('Server response: ', response);
   if (response.status !== 200) {
     throw new Error('Server was unable to delete the specified task');
@@ -33,7 +36,7 @@ export async function deleteTodo(todoId) {
 }
 
 export async function checkTodo(todo) {
-  const response = await axios.put(`http://10.0.2.2:3000/todo/${todo.id}`, {
+  const response = await axios.put(`http://${url}:3000/todo/${todo.id}`, {
     checked: !todo.isDone,
   });
   if (response.status !== 200) {
