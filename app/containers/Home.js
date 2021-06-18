@@ -62,15 +62,6 @@ const Home = ({ navigation }) => {
   );
   const [listRefreshing, setListRefreshing] = useState(false);
 
-  useEffect(() => {
-    console.log('Inside everytime-run Home effect');
-    if (!accountStore.userLoggedIn) {
-      setSignInModalVisibility(true);
-    } else {
-      setSignInModalVisibility(false);
-    }
-  });
-
   const handleRefresh = async () => {
     setListRefreshing(true);
     await accountStore.userLoggedIn?.fetchTodos();
@@ -78,11 +69,25 @@ const Home = ({ navigation }) => {
     setListRefreshing(false);
   };
 
+  useEffect(() => {
+    console.log('Inside everytime-run Home effect');
+    if (!accountStore.userLoggedIn) {
+      setSignInModalVisibility(true);
+    } else {
+      setSignInModalVisibility(false);
+      // handleRefresh();
+    }
+  });
+
+  useEffect(() => {
+    handleRefresh();
+  }, [accountStore.userLoggedIn?.todoList]);
+
   useEffect(
     () => () => {
       console.log('Inside one time run Home effect');
       setSignInModalVisibility(false);
-      handleRefresh();
+      // handleRefresh();
     },
     []
   );

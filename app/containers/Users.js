@@ -78,9 +78,9 @@ const Users = ({ navigation }) => {
     await accountStore.fetchAccounts();
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setListRefreshing(true);
-    getAccounts();
+    await getAccounts();
     setAccountListData(accountStore.accounts);
     setListRefreshing(false);
     console.log('Accounts: ', accountStore.accounts);
@@ -125,11 +125,11 @@ const Users = ({ navigation }) => {
           Not you? Choose another account to see others tasks
         </ScreenDescription>
         <UserList
-          data={accountListData} // revisar
+          data={accountListData}
           keyExtractor={(item, index) => `${item} ${index}`}
           refreshing={listRefreshing}
           onRefresh={handleRefresh}
-          extraData={listRefreshing}
+          extraData={accountListData}
           renderItem={({ item }) => {
             if (!item) {
               return <Text>Couldnt display account</Text>;

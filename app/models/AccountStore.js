@@ -134,7 +134,7 @@ const AccountStore = types
       console.log('Trying to log in ', account);
       self.userLoggedIn = undefined;
       console.log('Currently logged in: ', self.userLoggedIn);
-      self.userLoggedIn = account;
+      self.userLoggedIn = account.id;
       console.log(
         'User was logged in: ',
         self.userLoggedIn,

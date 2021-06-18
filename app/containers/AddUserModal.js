@@ -68,7 +68,7 @@ const AddUserModal = ({ navigation }) => {
     }
     setNewEmail('');
     if (!accountStore.userLoggedIn) {
-      accountStore.logIn(newAccount);
+      await accountStore.logIn(newAccount);
       navigation.navigate('Home');
     } else {
       navigation.goBack();
@@ -90,7 +90,9 @@ const AddUserModal = ({ navigation }) => {
           <Button
             title="Go back"
             onPress={() =>
-              navigation.navigate('Accounts', { screen: 'UsersList' })
+              accountStore.userLoggedIn
+                ? navigation.navigate('Accounts', { screen: 'UsersList' })
+                : navigation.goBack()
             }
             style={{ margin: 10 }}
           />
